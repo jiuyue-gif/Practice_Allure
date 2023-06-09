@@ -1,3 +1,5 @@
+from time import sleep
+
 from base.base_driver import init_driver
 from base.base_yml import yml_data_with_file
 from page.login_page import LoginPage
@@ -18,10 +20,9 @@ class TestLogin:
     @allure.severity(allure.severity_level.CRITICAL)
     @allure.step(title="登录的测试脚本")
     # 参数化测试用例
-    @pytest.mark.parametrize("username,password", data_with_key("login information"))
-    def test_login(self, username, password):
-        print(username)
-        print(password)
+    @pytest.mark.parametrize("username,password,toast,screen", data_with_key("login information"))
+    def test_login(self, username, password, toast, screen):
+        print(username + " " + password + " " + toast + " " + screen)
         # 下方的allure.attach("点击切换密码登录", "")是allure报告的解释步骤
         allure.attach(name="点击切换密码登录", body="")
         self.login_page.click_change_password()
@@ -38,5 +39,9 @@ class TestLogin:
         self.login_page.click_check_agreement()
         allure.attach(name="点击登录", body="")
         self.login_page.click_login()
-        # allure.attach("判断对应的提示是否存在", "成功")
-        # assert self.login_page.is_toast_exist("成功")
+        sleep(2)
+        allure.attach(name="截图生成的结果", body="")
+        self.login_page.screenshot(screen)
+        allure.attach(open("./screen/" + screen + ".png", "rb").read(), "图片", allure.attachment_type.PNG)
+        # allure.attach("判断对应的提示是否存在", toast)
+        # assert self.login_page.is_toast_exist(toast, True, screen)

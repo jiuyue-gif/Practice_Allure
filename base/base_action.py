@@ -61,3 +61,40 @@ class BaseAction(object):
         loc = feature_start + feature + feature_end
         return loc
 
+    # 获取toast提示
+    def find_toast(self, message, is_screenshot=False, screenshot_name=None, timeout=3, poll=0.1):
+        message = "//*[contains(@text, '" + message + "')]"
+        element = self.find_element((By.XPATH, message), timeout, poll)
+        if is_screenshot:
+            self.screenshot(screenshot_name)
+        return element.text
+
+    # 判断toast是否存在
+    def is_toast_exist(self, message, is_screenshot=False, screenshot_name=None, timeout=3, poll=0.1):
+        try:
+            self.find_toast(message, is_screenshot, screenshot_name, timeout, poll)
+            return True
+        except Exception:
+            return False
+
+    # 截图功能
+    def screenshot(self, file_name):
+        self.driver.get_screenshot_as_file("./screen/" + file_name + ".png")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
